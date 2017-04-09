@@ -1,0 +1,388 @@
+{
+    "InstanceId": "i-0401e7dc9bdbd903c",
+    "Timestamp": "2017-04-04T18:56:02.000Z",
+    "Output": "Xen Minimal OS!
+      start_info: 0xa01000(VA)
+        nr_pages: 0x26700
+      shared_inf: 0x7df2c000(MA)
+         pt_base: 0xa04000(VA)
+         nr_pt_frames: 0x9
+        mfn_list: 0x967000(VA)
+       mod_start: 0x0(VA)
+         mod_len: 0
+           flags: 0x0
+        cmd_line: root=/dev/sda1 ro 4
+      stack:      0x946780-0x966780
+      MM: Init
+          _text: 0x0(VA)
+         _etext: 0x61e05(VA)
+       _erodata: 0x76000(VA)
+         _edata: 0x7b6b4(VA)
+         stack start: 0x946780(VA)
+           _end: 0x966d34(VA)
+      start_pfn: a10
+        max_pfn: 26700
+        Mapping memory range 0xc00000 - 0x26700000
+    setting 0x0-0x76000 readonly
+    skipped 0x1000
+    MM: Initialise page allocator for b3e000(b3e000)-0(26700000)
+    MM: done
+    Demand map pfns at 26701000-36701000.
+    Heap resides at 36702000-76702000.
+    Initialising timer interface
+    Initialising console ... done.
+    gnttab_table mapped at 0x26701000.
+    Initialising scheduler
+    Thread \"Idle\": pointer: 0x36702008, stack: 0xbf0000
+    Initialising xenbus
+    Thread \"xenstore\": pointer: 0x36702478, stack: 0x26600000
+    Dummy main: start_info=0x966880
+    Thread \"main\": pointer: 0x367028e8, stack: 0x26610000
+    \"main\" \"root=/dev/sda1\" \"ro\" \"4\" 
+    vbd 2049 is hd0
+    ******************* BLKFRONT for device/vbd/2049 **********
+    
+    
+    backend at /local/domain/0/backend/vbd/25/2049
+    Failed to read /local/domain/0/backend/vbd/25/2049/feature-barrier.
+    Failed to read /local/domain/0/backend/vbd/25/2049/feature-flush-cache.
+    16777216 sectors of 0 bytes
+    **************************
+    \u001b[H\u001b[J  Booting 'Ubuntu Trusty Tahr (development branch), kernel 3.13.0-5-generic'\r
+    \r
+    root  (hd0)\r
+     Filesystem type is ext2fs, using whole disk\r
+     kernel  /boot/vmlinuz-3.13.0-5-generic root=LABEL=cloudimg-rootfs ro console=hv\r
+    c0 \r
+    initrd  /boot/initrd.img-3.13.0-5-generic\r
+    \r
+    close blk: backend at /local/domain/0/backend/vbd/25/2049
+    [    0.000000] Reserving virtual address space above 0xf5800000
+    [    0.000000] Initializing cgroup subsys cpuset
+    [    0.000000] Initializing cgroup subsys cpu
+    [    0.000000] Initializing cgroup subsys cpuacct
+    [    0.000000] Linux version 3.13.0-5-generic (buildd@akateko) (gcc version 4.8.2 (Ubuntu/Linaro 4.8.2-14ubuntu2) ) #20-Ubuntu SMP Mon Jan 20 19:58:23 UTC 2014 (Ubuntu 3.13.0-5.20-generic 3.13.0)
+    [    0.000000] KERNEL supported cpus:
+    [    0.000000]   Intel GenuineIntel
+    [    0.000000]   AMD AuthenticAMD
+    [    0.000000]   NSC Geode by NSC
+    [    0.000000]   Cyrix CyrixInstead
+    [    0.000000]   Centaur CentaurHauls
+    [    0.000000]   Transmeta GenuineTMx86
+    [    0.000000]   Transmeta TransmetaCPU
+    [    0.000000]   UMC UMC UMC UMC
+    [    0.000000] ACPI in unprivileged domain disabled
+    [    0.000000] e820: BIOS-provided physical RAM map:
+    [    0.000000] Xen: [mem 0x0000000000000000-0x000000000009ffff] usable
+    [    0.000000] Xen: [mem 0x00000000000a0000-0x00000000000fffff] reserved
+    [    0.000000] Xen: [mem 0x0000000000100000-0x0000000026efffff] usable
+    [    0.000000] NX (Execute Disable) protection: active
+    [    0.000000] DMI not present or invalid.
+    [    0.000000] e820: last_pfn = 0x26f00 max_arch_pfn = 0x1000000
+    [    0.000000] Scanning 1 areas for low memory corruption
+    [    0.000000] init_memory_mapping: [mem 0x00000000-0x000fffff]
+    [    0.000000] init_memory_mapping: [mem 0x26400000-0x265fffff]
+    [    0.000000] init_memory_mapping: [mem 0x24000000-0x263fffff]
+    [    0.000000] init_memory_mapping: [mem 0x00100000-0x23ffffff]
+    [    0.000000] init_memory_mapping: [mem 0x26600000-0x26efffff]
+    [    0.000000] RAMDISK: [mem 0x01dc4000-0x02bfdfff]
+    [    0.000000] 0MB HIGHMEM available.
+    [    0.000000] 623MB LOWMEM available.
+    [    0.000000]   mapped low ram: 0 - 26f00000
+    [    0.000000]   low ram: 0 - 26f00000
+    [    0.000000] Zone ranges:
+    [    0.000000]   DMA      [mem 0x00001000-0x00ffffff]
+    [    0.000000]   Normal   [mem 0x01000000-0x26efffff]
+    [    0.000000]   HighMem  empty
+    [    0.000000] Movable zone start for each node
+    [    0.000000] Early memory node ranges
+    [    0.000000]   node   0: [mem 0x00001000-0x0009ffff]
+    [    0.000000]   node   0: [mem 0x00100000-0x26efffff]
+    [    0.000000] Using APIC driver default
+    [    0.000000] SFI: Simple Firmware Interface v0.81 http://simplefirmware.org
+    [    0.000000] smpboot: Allowing 1 CPUs, 0 hotplug CPUs
+    [    0.000000] Found and enabled local APIC!
+    [    0.000000] PM: Registered nosave memory: [mem 0x000a0000-0x000fffff]
+    [    0.000000] e820: [mem 0x26f00000-0xffffffff] available for PCI devices
+    [    0.000000] Booting paravirtualized kernel on Xen
+    [    0.000000] Xen version: 3.4.3.amazon (preserve-AD)
+    [    0.000000] setup_percpu: NR_CPUS:8 nr_cpumask_bits:8 nr_cpu_ids:1 nr_node_ids:1
+    [    0.000000] PERCPU: Embedded 14 pages/cpu @e66eb000 s36096 r0 d21248 u57344
+    [ 2250.419059] Built 1 zonelists in Zone order, mobility grouping on.  Total pages: 158145
+    [ 2250.419064] Kernel command line: root=LABEL=cloudimg-rootfs ro console=hvc0 
+    [ 2250.420160] PID hash table entries: 4096 (order: 2, 16384 bytes)
+    [ 2250.420260] Dentry cache hash table entries: 131072 (order: 7, 524288 bytes)
+    [ 2250.420529] Inode-cache hash table entries: 65536 (order: 6, 262144 bytes)
+    [ 2250.420665] Initializing CPU#0
+    [ 2250.420916] allocated 1275896 bytes of page_cgroup
+    [ 2250.420918] please try 'cgroup_disable=memory' option if you don't want memory cgroups
+    [ 2250.420924] Initializing HighMem for node 0 (00000000:00000000)
+    [ 2250.422248] Memory: 594036K/637564K available (6451K kernel code, 636K rwdata, 2732K rodata, 868K init, 920K bss, 43528K reserved, 0K highmem)
+    [ 2250.422254] virtual kernel memory layout:
+    [ 2250.422254]     fixmap  : 0xf5714000 - 0xf57ff000   ( 940 kB)
+    [ 2250.422254]     pkmap   : 0xf5400000 - 0xf5600000   (2048 kB)
+    [ 2250.422254]     vmalloc : 0xe7700000 - 0xf53fe000   ( 220 MB)
+    [ 2250.422254]     lowmem  : 0xc0000000 - 0xe6f00000   ( 623 MB)
+    [ 2250.422254]       .init : 0xc199a000 - 0xc1a73000   ( 868 kB)
+    [ 2250.422254]       .data : 0xc164d332 - 0xc1999100   (3375 kB)
+    [ 2250.422254]       .text : 0xc1000000 - 0xc164d332   (6452 kB)
+    [ 2250.422321] SLUB: HWalign=64, Order=0-3, MinObjects=0, CPUs=1, Nodes=1
+    [ 2250.422339] Hierarchical RCU implementation.
+    [ 2250.422340] \tRCU dyntick-idle grace-period acceleration is enabled.
+    [ 2250.422342] \tRCU restricting CPUs from NR_CPUS=8 to nr_cpu_ids=1.
+    [ 2250.422349] NR_IRQS:2304 nr_irqs:256 16
+    [ 2250.422453] Console: colour dummy device 80x25
+    [ 2250.422645] console [tty0] enabled
+    [ 2250.422940] console [hvc0] enabled
+    [ 2250.422971] installing Xen timer for CPU 0
+    [ 2250.423017] tsc: Detected 1800.000 MHz processor
+    [ 2250.423028] Calibrating delay loop (skipped), value calculated using timer frequency.. 3600.00 BogoMIPS (lpj=7200000)
+    [ 2250.423041] pid_max: default: 32768 minimum: 301
+    [ 2250.423074] Security Framework initialized
+    [ 2250.423100] AppArmor: AppArmor initialized
+    [ 2250.423106] Yama: becoming mindful.
+    [ 2250.423161] Mount-cache hash table entries: 512
+    [ 2250.423408] Initializing cgroup subsys memory
+    [ 2250.423422] Initializing cgroup subsys devices
+    [ 2250.423429] Initializing cgroup subsys freezer
+    [ 2250.423436] Initializing cgroup subsys blkio
+    [ 2250.423443] Initializing cgroup subsys perf_event
+    [ 2250.423450] Initializing cgroup subsys hugetlb
+    [ 2250.423531] CPU: Physical Processor ID: 0
+    [ 2250.423539] CPU: Processor Core ID: 5
+    [ 2250.423545] ENERGY_PERF_BIAS: Set to 'normal', was 'performance'
+    [ 2250.423545] ENERGY_PERF_BIAS: View and update with x86_energy_perf_policy(8)
+    [ 2250.423574] Last level iTLB entries: 4KB 512, 2MB 0, 4MB 0
+    [ 2250.423574] Last level dTLB entries: 4KB 512, 2MB 32, 4MB 32
+    [ 2250.423574] tlb_flushall_shift: 5
+    [ 2250.510801] Freeing SMP alternatives memory: 32K (c1a73000 - c1a7b000)
+    [ 2250.512292] ftrace: allocating 27519 entries in 54 pages
+    [ 2250.530411] cpu 0 spinlock event irq 17
+    [ 2250.554432] Performance Events: unsupported p6 CPU model 45 no PMU driver, software events only.
+    [ 2250.556523] x86: Booted up 1 node, 1 CPUs
+    [ 2250.556580] NMI watchdog: disabled (cpu0): hardware events not enabled
+    [ 2250.556687] devtmpfs: initialized
+    [ 2250.556825] EVM: security.selinux
+    [ 2250.556832] EVM: security.SMACK64
+    [ 2250.556837] EVM: security.ima
+    [ 2250.556841] EVM: security.capability
+    [ 2250.558079] pinctrl core: initialized pinctrl subsystem
+    [ 2250.558117] xen:grant_table: Grant tables using version 1 layout
+    [ 2250.558155] Grant table initialized
+    [ 2250.558211] regulator-dummy: no parameters
+    [ 2250.578086] RTC time: 165:165:165, date: 165/165/65
+    [ 2250.578153] NET: Registered protocol family 16
+    [ 2250.578364] EISA bus registered
+    [ 2250.579281] PCI: setting up Xen PCI frontend stub
+    [ 2250.580352] bio: create slab <bio-0> at 0
+    [ 2250.580504] ACPI: Interpreter disabled.
+    [ 2250.580521] xen:balloon: Initialising balloon driver
+    [ 2250.581553] xen_balloon: Initialising balloon driver
+    [ 2250.581753] vgaarb: loaded
+    [ 2250.581995] SCSI subsystem initialized
+    [ 2250.582095] usbcore: registered new interface driver usbfs
+    [ 2250.582110] usbcore: registered new interface driver hub
+    [ 2250.582138] usbcore: registered new device driver usb
+    [ 2250.582254] PCI: System does not support PCI
+    [ 2250.582262] PCI: System does not support PCI
+    [ 2250.582363] NetLabel: Initializing
+    [ 2250.582372] NetLabel:  domain hash size = 128
+    [ 2250.582377] NetLabel:  protocols = UNLABELED CIPSOv4
+    [ 2250.582395] NetLabel:  unlabeled traffic allowed by default
+    [ 2250.582539] Switched to clocksource xen
+    [ 2250.589821] AppArmor: AppArmor Filesystem Enabled
+    [ 2250.589845] pnp: PnP ACPI: disabled
+    [ 2250.589851] PnPBIOS: Disabled
+    [ 2250.591488] NET: Registered protocol family 2
+    [ 2250.591659] TCP established hash table entries: 8192 (order: 3, 32768 bytes)
+    [ 2250.591682] TCP bind hash table entries: 8192 (order: 4, 65536 bytes)
+    [ 2250.591706] TCP: Hash tables configured (established 8192 bind 8192)
+    [ 2250.591734] TCP: reno registered
+    [ 2250.591740] UDP hash table entries: 512 (order: 2, 16384 bytes)
+    [ 2250.591752] UDP-Lite hash table entries: 512 (order: 2, 16384 bytes)
+    [ 2250.591807] NET: Registered protocol family 1
+    [ 2250.591885] Trying to unpack rootfs image as initramfs...
+    [ 2250.610217] Freeing initrd memory: 14568K (c1dc4000 - c2bfe000)
+    [ 2250.610393] platform rtc_cmos: registered platform RTC device (no PNP device found)
+    [ 2250.610463] Scanning for low memory corruption every 60 seconds
+    [ 2250.610781] Initialise system trusted keyring
+    [ 2250.610842] audit: initializing netlink socket (disabled)
+    [ 2250.610863] type=2000 audit(1491331987.257:1): initialized
+    [ 2250.638295] HugeTLB registered 2 MB page size, pre-allocated 0 pages
+    [ 2250.639560] zbud: loaded
+    [ 2250.639630] VFS: Disk quotas dquot_6.5.2
+    [ 2250.639689] Dquot-cache hash table entries: 1024 (order 0, 4096 bytes)
+    [ 2250.640188] fuse init (API version 7.22)
+    [ 2250.640276] msgmni has been set to 1188
+    [ 2250.640347] Key type big_key registered
+    [ 2250.640637] Key type asymmetric registered
+    [ 2250.640644] Asymmetric key parser 'x509' registered
+    [ 2250.640685] Block layer SCSI generic (bsg) driver version 0.4 loaded (major 252)
+    [ 2250.640726] io scheduler noop registered
+    [ 2250.640732] io scheduler deadline registered (default)
+    [ 2250.640767] io scheduler cfq registered
+    [ 2250.640837] pci_hotplug: PCI Hot Plug PCI Core version: 0.5
+    [ 2250.640859] pciehp: PCI Express Hot Plug Controller Driver version: 0.4
+    [ 2250.641126] isapnp: Scanning for PnP cards...
+    [ 2250.690170] Serial: 8250/16550 driver, 32 ports, IRQ sharing enabled
+    [ 2250.691447] Linux agpgart interface v0.103
+    [ 2250.692908] brd: module loaded
+    [ 2250.693692] loop: module loaded
+    [ 2250.997529] isapnp: No Plug & Play device found
+    [ 2251.000312] libphy: Fixed MDIO Bus: probed
+    [ 2251.000451] tun: Universal TUN/TAP device driver, 1.6
+    [ 2251.000460] tun: (C) 1999-2004 Max Krasnyansky <maxk@qualcomm.com>
+    [ 2251.000545] PPP generic driver version 2.4.2
+    [ 2251.000595] xen_netfront: Initialising Xen virtual ethernet driver
+    [ 2251.002640] ehci_hcd: USB 2.0 'Enhanced' Host Controller (EHCI) Driver
+    [ 2251.002658] ehci-pci: EHCI PCI platform driver
+    [ 2251.002688] ehci-platform: EHCI generic platform driver
+    [ 2251.002702] ohci_hcd: USB 1.1 'Open' Host Controller (OHCI) Driver
+    [ 2251.002709] ohci-pci: OHCI PCI platform driver
+    [ 2251.002722] ohci-platform: OHCI generic platform driver
+    [ 2251.002734] uhci_hcd: USB Universal Host Controller Interface driver
+    [ 2251.002788] i8042: PNP: No PS/2 controller found. Probing ports directly.
+    [ 2252.007809] i8042: No controller found
+    [ 2252.008032] mousedev: PS/2 mouse device common for all mice
+    [ 2252.067814] rtc_cmos rtc_cmos: rtc core: registered rtc_cmos as rtc0
+    [ 2252.067896] rtc_cmos: probe of rtc_cmos failed with error -38
+    [ 2252.068003] device-mapper: uevent: version 1.0.3
+    [ 2252.068103] device-mapper: ioctl: 4.27.0-ioctl (2013-10-30) initialised: dm-devel@redhat.com
+    [ 2252.068161] platform eisa.0: Probing EISA bus 0
+    [ 2252.068188] platform eisa.0: EISA: Detected 0 cards
+    [ 2252.068198] cpufreq-nforce2: No nForce2 chipset.
+    [ 2252.068221] ledtrig-cpu: registered to indicate activity on CPUs
+    [ 2252.068546] blkfront: xvda1: barrier or flush: disabled; persistent grants: disabled; indirect descriptors: disabled;
+    [ 2252.068584] TCP: cubic registered
+    [ 2252.068714] NET: Registered protocol family 10
+    [ 2252.068983] NET: Registered protocol family 17
+    [ 2252.069001] Key type dns_resolver registered
+    [ 2252.069075] Using IPI No-Shortcut mode
+    [ 2252.069164] Loading compiled-in X.509 certificates
+    [ 2252.073613] Loaded X.509 cert 'Magrathea: Glacier signing key: 27eb67482af7813e5d67e70879b9c0ac93a78e38'
+    [ 2252.073651] registered taskstats version 1
+    [ 2252.077727] Key type trusted registered
+    [ 2252.080966] Key type encrypted registered
+    [ 2252.084881] AppArmor: AppArmor sha1 policy hashing enabled
+    [ 2252.084896] IMA: No TPM chip found, activating TPM-bypass!
+    [ 2252.084987]   Magic number: 1:252:3141
+    [ 2252.085034] /build/buildd/linux-3.13.0/drivers/rtc/hctosys.c: unable to open rtc device (rtc0)
+    [ 2252.085094] BIOS EDD facility v0.16 2004-Jun-25, 0 devices found
+    [ 2252.085104] EDD information not available.
+    [ 2252.085828] Freeing unused kernel memory: 868K (c199a000 - c1a73000)
+    [ 2252.088018] Write protecting the kernel text: 6456k
+    [ 2252.088927] Write protecting the kernel read-only data: 2736k
+    [ 2252.088935] NX-protecting the kernel data: 5832k
+    Loading, please wait...
+    [ 2252.122805] systemd-udevd[93]: starting version 204
+    error: unexpectedly disconnected from boot status daemon
+    Begin: Loading essential drivers ... done.
+    Begin: Running /scripts/init-premount ... done.
+    Begin: Mounting root file system ... Begin: Running /scripts/local-top ... done.
+    Begin: Running /scripts/local-premount ... done.
+    [ 2253.830966] EXT4-fs (xvda1): mounted filesystem with ordered data mode. Opts: (null)
+    Begin: Running /scripts/local-bottom ... done.
+    done.
+    Begin: Running /scripts/init-bottom ... done.
+    [ 2256.303151] random: init urandom read with 114 bits of entropy available
+    [ 2256.650386] random: nonblocking pool is initialized
+    [ 2257.805722] EXT4-fs (xvda1): warning: checktime reached, running e2fsck is recommended
+    [ 2257.821477] EXT4-fs (xvda1): re-mounted. Opts: (null)
+    Cloud-init v. 0.7.5 running 'init-local' at Tue, 04 Apr 2017 18:53:23 +0000. Up 16.54 seconds.
+    Cloud-init v. 0.7.5 running 'init' at Tue, 04 Apr 2017 18:53:25 +0000. Up 17.98 seconds.
+    ci-info: ++++++++++++++++++++++++++Net device info+++++++++++++++++++++++++++
+    ci-info: +--------+------+--------------+---------------+-------------------+
+    ci-info: | Device |  Up  |   Address    |      Mask     |     Hw-Address    |
+    ci-info: +--------+------+--------------+---------------+-------------------+
+    ci-info: |   lo   | True |  127.0.0.1   |   255.0.0.0   |         .         |
+    ci-info: |  eth0  | True | 172.31.26.80 | 255.255.240.0 | 0e:a1:a7:63:4a:3c |
+    ci-info: +--------+------+--------------+---------------+-------------------+
+    ci-info: +++++++++++++++++++++++++++++++Route info++++++++++++++++++++++++++++++++
+    ci-info: +-------+-------------+-------------+---------------+-----------+-------+
+    ci-info: | Route | Destination |   Gateway   |    Genmask    | Interface | Flags |
+    ci-info: +-------+-------------+-------------+---------------+-----------+-------+
+    ci-info: |   0   |   0.0.0.0   | 172.31.16.1 |    0.0.0.0    |    eth0   |   UG  |
+    ci-info: |   1   | 172.31.16.0 |   0.0.0.0   | 255.255.240.0 |    eth0   |   U   |
+    ci-info: +-------+-------------+-------------+---------------+-----------+-------+
+    Generating public/private rsa key pair.
+    Your identification has been saved in /etc/ssh/ssh_host_rsa_key.
+    Your public key has been saved in /etc/ssh/ssh_host_rsa_key.pub.
+    The key fingerprint is:
+    01:83:c2:c8:08:04:db:50:08:ef:97:c8:4c:0c:fd:90 root@ip-172-31-26-80
+    The key's randomart image is:
+    +--[ RSA 2048]----+
+    |&B.. .o          |
+    |+OE .  o         |
+    |. =+    .        |
+    | = ...   .       |
+    |  = o   S        |
+    |   .             |
+    |                 |
+    |                 |
+    |                 |
+    +-----------------+
+    Generating public/private dsa key pair.
+    Your identification has been saved in /etc/ssh/ssh_host_dsa_key.
+    Your public key has been saved in /etc/ssh/ssh_host_dsa_key.pub.
+    The key fingerprint is:
+    39:83:8e:13:b9:f9:6d:2e:ff:63:d6:74:29:e9:7c:85 root@ip-172-31-26-80
+    The key's randomart image is:
+    +--[ DSA 1024]----+
+    |                 |
+    |                 |
+    |                 |
+    |     . . .       |
+    |    o . S    . o |
+    |     *   o  + E .|
+    |    = .    = o . |
+    |     o... + + .  |
+    |      .=++.. .   |
+    +-----------------+
+    Generating public/private ecdsa key pair.
+    Your identification has been saved in /etc/ssh/ssh_host_ecdsa_key.
+    Your public key has been saved in /etc/ssh/ssh_host_ecdsa_key.pub.
+    The key fingerprint is:
+    69:2b:d6:7a:34:14:82:04:4b:77:0b:f7:f2:17:c4:35 root@ip-172-31-26-80
+    The key's randomart image is:
+    +--[ECDSA  256]---+
+    |  oo+.o  ...E    |
+    | . o.+.o...  .   |
+    |  .   o....      |
+    |       o.. .     |
+    |       .S .      |
+    |       ooo       |
+    |      o.o.       |
+    |     . o.        |
+    |      ..         |
+    +-----------------+
+     * Starting early crypto disks...       \u001b[80G \r\u001b[74G[ OK ]
+     * Starting AppArmor profiles       \u001b[80G Skipping profile in /etc/apparmor.d/disable: usr.sbin.rsyslogd
+     \r\u001b[74G[ OK ]
+    landscape-client is not configured, please run landscape-config.
+     * Restoring resolver state...       \u001b[80G \r\u001b[74G[ OK ]
+     Cloud-init v. 0.7.5 running 'modules:config' at Tue, 04 Apr 2017 18:53:29 +0000. Up 22.15 seconds.
+    Generating locales...
+      en_US.UTF-8... done
+      Generation complete.
+    Cloud-init v. 0.7.5 running 'modules:final' at Tue, 04 Apr 2017 18:53:37 +0000. Up 30.44 seconds.
+    ci-info: +++++++Authorized keys from /home/ubuntu/.ssh/authorized_keys for user ubuntu+++++++
+    ci-info: +---------+-------------------------------------------------+---------+------------+
+    ci-info: | Keytype |                Fingerprint (md5)                | Options |  Comment   |
+    ci-info: +---------+-------------------------------------------------+---------+------------+
+    ci-info: | ssh-rsa | 8d:0f:4e:49:e2:6a:aa:3e:2f:d6:af:80:de:df:91:70 |    -    | cs615-key2 |
+    ci-info: +---------+-------------------------------------------------+---------+------------+
+    ec2: 
+    ec2: #############################################################
+    ec2: -----BEGIN SSH HOST KEY FINGERPRINTS-----
+    ec2: 1024 39:83:8e:13:b9:f9:6d:2e:ff:63:d6:74:29:e9:7c:85  root@ip-172-31-26-80 (DSA)
+    ec2: 256 69:2b:d6:7a:34:14:82:04:4b:77:0b:f7:f2:17:c4:35  root@ip-172-31-26-80 (ECDSA)
+    ec2: 2048 01:83:c2:c8:08:04:db:50:08:ef:97:c8:4c:0c:fd:90  root@ip-172-31-26-80 (RSA)
+    ec2: -----END SSH HOST KEY FINGERPRINTS-----
+    ec2: #############################################################
+    -----BEGIN SSH HOST KEY KEYS-----
+    ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBIMW9jP2eLIxTdyg61/HA9Uz0+zZQ66VilZFewyuSNS4qWxFKg1req0eZmABnIn+BKXaUud7gzrndsgUO0ZymQA= root@ip-172-31-26-80
+    ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCsVeFq/XY5bdX4rXvyrd2WKxjFCv4HMxM0Kjielf4oLC3CCcOunhLmm8MLnY3z0vNyDzg1O1tU4kRDY7WjHdMZaQDbFua1/cN7HDaR3/c3bBz3EfJJ1D2tIQfclOdkTs+b5cQz/AiOenBbrEeZ07DyHa3mxLchutkBkgks1ssT7Tf4I6cyMlXuijVgTw7mws18YEhgaTBZg/D7pHlqEq3kxRoxi4Xxc1l2oXU1gnIg0W5mHm74gbYf6rAcVHEhjV3yo7t6OmmeYRfMdHZcW0RTLCL7rX6B+2C/cHDMHJZDJhhlODikuzhTMfFCHfNbXp1gre0c/F/FZKu2pdeSbIU/ root@ip-172-31-26-80
+    -----END SSH HOST KEY KEYS-----
+    Cloud-init v. 0.7.5 finished at Tue, 04 Apr 2017 18:53:37 +0000. Datasource DataSourceEc2.  Up 30.77 seconds
+    "
+}
