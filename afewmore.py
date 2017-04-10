@@ -139,7 +139,7 @@ def execute(cmd, timeout=None):
             return (output, error)
 
         if output:
-            log("successfully excuted command: \n\t{0}".format(cmd))
+            # log("successfully executed command: \n\t{0}".format(cmd))
             return (output, None)
         if error:
             log("error occurred when excuting command: \n\t{0}".format(cmd)) 
@@ -174,15 +174,15 @@ def host_parser(dir):
 
     return hosts
 
-# function analyse_instance:
+# function analyse_original_instance:
 # description: check if source instance is accessible; check if source directory is valid; check if login user name is valid
 # params: 
 #       instance_id: source instances' id
 #       copy_dir: source directory
 # return: source instance object
-def analyse_instance(instance_id, copy_dir):
+def analyse_original_instance(instance_id, copy_dir):
 
-    log("analysing instance: {0}".format(instance_id))
+    log("analysing original instance: {0}".format(instance_id))
 
     origin = Instance(instance_id)
     while not origin.isReady():
@@ -191,26 +191,87 @@ def analyse_instance(instance_id, copy_dir):
     log("finding hosts from: {0}".format(SSH_CONFIG_DIR))
     for host in host_parser(SSH_CONFIG_DIR):
         if host.pubIp == origin.pubIp or host.pubIp == origin.pubDns:
-            log("host found: {0}".format(host))
+            log("host found: {0}".format(host) + "\n")
             origin.setLoginUser(host.user)
             origin.setIdFile(host.idFile)
 
-    log("checking username and soruce directory...")
-    out, err = execute("ssh -i {0} {1}@{2} 'ls {3}'".format(origin.idFile, origin.uname, origin.pubIp, copy_dir))
+    log('checking login username...')
+    out, err = execute("ssh -i {0} {1}@{2} 'echo cs615'".format(origin.idFile, origin.uname, origin.pubIp, copy_dir))
 
     if err:
         log(err)
-        elog("afewmore ERROR: cannot access {0}: No such file or directory".format(copy_dir))
+        elog("afewmore ERROR: cannot access instance")
 
     else:
         msg = out.split(' ')
-        if len(msg) == 11 and msg[0] == 'Please' and msg[1] == 'login' and msg[2] == 'as' and msg[3] == 'the' and msg[4] == 'user':
+        if msg[0].strip() != "cs615":
             log("login user is not {0}".format(origin.uname))
             loginUser = msg[5].strip('"')
             log("changing login user to {0}".format(loginUser))
             origin.setLoginUser(loginUser)
+
         else:
             log("login user is {0}".format(origin.uname))            
+
+        # super user command: assume it is sudo
+        SUPER_USER_COMMAND = 'sudo'
+        # use chown to change the ownership of the entire copy_dir to loginUser
+        log('changing dir ownership...')
+        execute("ssh -i {0} {1}@{2} '{3} chown -R {1} {4}'".format(origin.idFile, origin.uname, origin.pubIp, SUPER_USER_COMMAND, copy_dir))
+        log('done')
+        # user chmod to change the mod of the entire copy_dir to -(d)rwx------
+        log('changing dir mode...')
+        execute("ssh -i {0} {1}@{2} 'chmod -R 700 {4}'".format(origin.idFile, origin.uname, origin.pubIp, SUPER_USER_COMMAND, copy_dir))
+        log('done')
+        # check copy_dir
+        log("checking soruce directory...")
+        out, err = execute("ssh -i {0} {1}@{2} 'ls -l {3}'".format(origin.idFile, origin.uname, origin.pubIp, copy_dir))
+        log('done\n')
+        if err:
+            elog("afewmore ERROR: cannot access directory or no such file")
+
+    return origin
+
+def analyse_created_instance(instance_id, target_dir):
+
+    log("analysing created instance: {0}".format(instance_id))
+
+    created = Instance(instance_id)
+
+    log('checking login username...')
+    out, err = execute("ssh -i {0} {1}@{2} 'echo cs615'".format(created.idFile, created.uname, created.pubIp, target_dir))
+
+    if err:
+        log(err)
+        elog("afewmore ERROR: cannot access instance")
+
+    else:
+        msg = out.split(' ')
+        if msg[0].strip() != "cs615":
+            log("login user is not {0}".format(created.uname))
+            loginUser = msg[5].strip('"')
+            log("changing login user to {0}".format(loginUser))
+            created.setLoginUser(loginUser)
+
+        else:
+            log("login user is {0}".format(created.uname))            
+
+        # super user command: assume it is sudo
+        SUPER_USER_COMMAND = 'sudo'
+        # use chown to change the ownership of the entire target_dir to loginUser
+        log('changing dir ownership...')
+        execute("ssh -i {0} {1}@{2} '{3} chown -R {1} {4}'".format(created.idFile, created.uname, created.pubIp, SUPER_USER_COMMAND, target_dir))
+        log('done')
+        # user chmod to change the mod of the entire target_dir to -(d)rwx------
+        log('changing dir mode...')
+        execute("ssh -i {0} {1}@{2} 'chmod -R 700 {4}'".format(created.idFile, created.uname, created.pubIp, SUPER_USER_COMMAND, target_dir))
+        log('done')
+        # check target_dir
+        log("checking soruce directory...")
+        out, err = execute("ssh -i {0} {1}@{2} 'ls -l {3}'".format(created.idFile, created.uname, created.pubIp, target_dir))
+        log('done\n')
+        if err:
+            elog("afewmore ERROR: cannot access directory or no such file")            
 
     return origin
 
@@ -257,7 +318,7 @@ def scp(origin, targets, dir="/data"):
 
         if target.isReady():
             log("copying to target: {0}".format(target.insId))
-            out, err = execute("scp -3 -r -i {0} {1}@{2}:{3} {4}@{5}:{6}"
+            out, err = execute("scp -3C -r -i {0} {1}@{2}:{3} {4}@{5}:{6}"
                 # TODO: specify target dir 
                 .format(origin.idFile, origin.uname, origin.pubIp, dir, target.uname, target.pubIp, "~/."))
             if err:
@@ -274,21 +335,23 @@ def scp(origin, targets, dir="/data"):
         
         end_time = time.time()
 
-        if end_time - start_time < 0.5:
-            log("gaping")
-            time.sleep(1)
+        if end_time - start_time < 5:
+            log("wating...")
+            time.sleep(5)
 
 # entrance for the program
 def start(instance_id, copy_dir, num_new_ins):
     log("starting with {0} {1} {2}".format(instance_id, copy_dir, num_new_ins))
     log("verbose: " + str(DEBUG))
 
-    origin_instance = analyse_instance(instance_id, copy_dir)
+    origin_instance = analyse_original_instance(instance_id, copy_dir)
     log(origin_instance)
 
     targets_queue = dup_instance(origin_instance, num_new_ins)
 
     scp(origin_instance, targets_queue, copy_dir)
+
+    log("\n**DONE**\n")
 
 if __name__ == "__main__":
 
@@ -306,9 +369,6 @@ if __name__ == "__main__":
         "-v":False,
     }
     i = 1
-
-    if len(options) == 1:
-        elog("afewmore ERROR: Invalid number of argument")
 
     while i < len(options):
         op = options[i]
