@@ -200,7 +200,7 @@ def analyse_original_instance(instance_id, copy_dir):
 
     if err:
         log(err)
-        elog("afewmore ERROR: cannot access instance")
+        elog("afewmore ERROR: cannot access instance: {0}".format(origin.insId))
 
     else:
         msg = out.split(' ')
@@ -232,18 +232,14 @@ def analyse_original_instance(instance_id, copy_dir):
 
     return origin
 
-def analyse_created_instance(instance_id, target_dir):
-
-    log("analysing created instance: {0}".format(instance_id))
-
-    created = Instance(instance_id)
+def analyse_created_instance(created, target_dir):
 
     log('checking login username...')
     out, err = execute("ssh -i {0} {1}@{2} 'echo cs615'".format(created.idFile, created.uname, created.pubIp, target_dir))
 
     if err:
         log(err)
-        elog("afewmore ERROR: cannot access instance")
+        elog("afewmore ERROR: cannot access instance: {0}".format(created.insId))
 
     else:
         msg = out.split(' ')
@@ -258,12 +254,16 @@ def analyse_created_instance(instance_id, target_dir):
 
         # super user command: assume it is sudo
         SUPER_USER_COMMAND = 'sudo'
+        # in case newly created instance doesn't have the target directory
+        log('creating target dir...')
+        execute("ssh -i {0} {1}@{2} '{3} mkdir -p {4}'".format(created.idFile, created.uname, created.pubIp, SUPER_USER_COMMAND, target_dir))
+        log('done')
         # use chown to change the ownership of the entire target_dir to loginUser
-        log('changing dir ownership...')
+        log('changing target dir ownership...')
         execute("ssh -i {0} {1}@{2} '{3} chown -R {1} {4}'".format(created.idFile, created.uname, created.pubIp, SUPER_USER_COMMAND, target_dir))
         log('done')
         # user chmod to change the mod of the entire target_dir to -(d)rwx------
-        log('changing dir mode...')
+        log('changing target dir mode...')
         execute("ssh -i {0} {1}@{2} 'chmod -R 700 {4}'".format(created.idFile, created.uname, created.pubIp, SUPER_USER_COMMAND, target_dir))
         log('done')
         # check target_dir
@@ -273,7 +273,7 @@ def analyse_created_instance(instance_id, target_dir):
         if err:
             elog("afewmore ERROR: cannot access directory or no such file")            
 
-    return origin
+    return created
 
 # function dup_instance:
 # description: run n more instances
@@ -310,6 +310,11 @@ def dup_instance(origin_instance, num):
 #       targets: number of instances to be started
 # return: a queue of newly stated instances object
 def scp(origin, targets, dir="/data"):
+
+    # format target directory
+    if dir[len(dir) - 1] != "/":
+        dir += "/"
+
     while len(targets) is not 0:
         target = targets.popleft()
         target.uname = origin.uname
@@ -317,10 +322,11 @@ def scp(origin, targets, dir="/data"):
         start_time = time.time()
 
         if target.isReady():
+            target = analyse_created_instance(target, dir)
             log("copying to target: {0}".format(target.insId))
             out, err = execute("scp -3C -r -i {0} {1}@{2}:{3} {4}@{5}:{6}"
                 # TODO: specify target dir 
-                .format(origin.idFile, origin.uname, origin.pubIp, dir, target.uname, target.pubIp, "~/."))
+                .format(origin.idFile, origin.uname, origin.pubIp, dir + "*", target.uname, target.pubIp, dir))
             if err:
                 elog(err)
             if out:
