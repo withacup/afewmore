@@ -92,34 +92,6 @@ class Instance:
     def setLoginUser(self, username):
         self.uname = username
 
-    # def setIdFile(self, idFile):
-    #     self.idFile = idFile
-
-# class Host:
-# description: store hsot infomation parsed from ~/.ssh/config file
-# members:
-#   host -> Host alias specified by user in config
-#   pubIp -> HostName specified by user in config
-#   user -> User specified by user in config
-#   idFile -> IdentityFile specified by user in config
-# class Host:
-#     def __init__(self, info_arr):
-#         cache = {}
-#         for item in info_arr:
-#             cache[item[0]] = item[1]
-#         self.host = cache["Host"]
-#         # self.pubIp = cache["HostName"]
-#         # self.user = cache["User"]
-#         self.idFile = cache["IdentityFile"]
-
-#     def __str__(self):
-#         return "\n".join([
-#             "\tHost: " + self.host, 
-#             # "\tHostName: " + self.pubIp,
-#             # "\tUser: " + self.user, 
-#             "\tIdentityFile: " + self.idFile,
-#             ])
-
 # function execute:
 # description: execute a single command 
 # params: 
@@ -149,31 +121,6 @@ def execute(cmd, timeout=None):
 
     except OSError, oserror:
         return (None, oserror)
-
-# function host_parser:
-# description: parse ~/.ssh/config file to [Host]
-# params: 
-#       dir: path to the config file
-# return: [Host]
-# def host_parser(dir):
-
-#     try:
-#         config = open(dir, 'r')
-#     except IOError, err:
-#         elog("afewmore ERROR: cannot open file: {0}".format(dir))
-
-#     lines = config.readlines()
-#     hosts = []
-#     for i in range(len(lines)):
-#         if lines[i].strip(" ").split(" ")[0] == "Host":
-#             j = i + 1
-#             while (j < len(lines) and lines[j].strip(" ").split(" ")[0] != "Host"):
-#                 j += 1
-#             res = [lines[k] for k in range(i, j)]
-#             hosts.append(Host([item.strip().split(" ") for item in res]))
-#     config.close()
-
-#     return hosts
 
 # function analyse_original_instance:
 # description: check if source instance is accessible; check if source directory is valid; check if login user name is valid
