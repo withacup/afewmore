@@ -6,9 +6,17 @@ import time
 import subprocess
 import sys
 
+import re
+
+p = re.compile('.*amazonaws\.com')
+m = p.match('ec2-174-129-149-195.compute-1.amazonas.com')
+print m
+
+
+# print 'hello'
 # The os.setsid() is passed in the argument preexec_fn so
 # it's run after the fork() and before  exec() to run the shell.
-print len("i-0433ad75f5c4a6ded")
+# print len("i-0433ad75f5c4a6ded")
 # start = time.time()
 # a = 1
 # for i in range(10000000):

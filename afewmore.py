@@ -7,6 +7,7 @@ import json
 import os
 import signal
 import time
+import re
 
 from collections import deque
 
@@ -64,7 +65,7 @@ class Instance:
             elog(err)
 
     def __str__(self):
-        res = "\tInstanceId: {0} \n\tAvailabilityZone: {1}\n\tKeyName: {2}\n\tImageId: {3}\n\tInstanceType: {4}\n\tPublicIpAddress: {5}".format(self.insId, self.azone, self.kname, self.imgId, self.itype, self.pubIp)
+        res = "\tInstanceId: {0} \n\tAvailabilityZone: {1}\n\tKeyName: {2}\n\tImageId: {3}\n\tInstanceType: {4}\n\tPublicIpAddress: {5}".format(self.insId, self.azone, self.kname, self.imgId, self.itype, self.pubDns)
         for i, group in enumerate(self.sgroups):
             res += "\n\tSG #" + str(i)
             res += str(group)
@@ -74,7 +75,7 @@ class Instance:
     # If it is ready, this command will return the footprint infomation of this instance
     def isReady(self):
         log("checking instance: {0}".format(self.insId))
-        out, err = execute("ssh-keyscan {0}".format(self.pubIp))
+        out, err = execute("ssh-keyscan {0}".format(self.pubDns))
 
         if out :
             out, err = execute("echo '{0}' >> ~/.ssh/known_hosts".format(out))
@@ -91,8 +92,8 @@ class Instance:
     def setLoginUser(self, username):
         self.uname = username
 
-    def setIdFile(self, idFile):
-        self.idFile = idFile
+    # def setIdFile(self, idFile):
+    #     self.idFile = idFile
 
 # class Host:
 # description: store hsot infomation parsed from ~/.ssh/config file
@@ -101,23 +102,23 @@ class Instance:
 #   pubIp -> HostName specified by user in config
 #   user -> User specified by user in config
 #   idFile -> IdentityFile specified by user in config
-class Host:
-    def __init__(self, info_arr):
-        cache = {}
-        for item in info_arr:
-            cache[item[0]] = item[1]
-        self.host = cache["Host"]
-        self.pubIp = cache["HostName"]
-        self.user = cache["User"]
-        self.idFile = cache["IdentityFile"]
+# class Host:
+#     def __init__(self, info_arr):
+#         cache = {}
+#         for item in info_arr:
+#             cache[item[0]] = item[1]
+#         self.host = cache["Host"]
+#         # self.pubIp = cache["HostName"]
+#         # self.user = cache["User"]
+#         self.idFile = cache["IdentityFile"]
 
-    def __str__(self):
-        return "\n".join([
-            "\tHost: " + self.host, 
-            "\tHostName: " + self.pubIp,
-            "\tUser: " + self.user, 
-            "\tIdentityFile: " + self.idFile,
-            ])
+#     def __str__(self):
+#         return "\n".join([
+#             "\tHost: " + self.host, 
+#             # "\tHostName: " + self.pubIp,
+#             # "\tUser: " + self.user, 
+#             "\tIdentityFile: " + self.idFile,
+#             ])
 
 # function execute:
 # description: execute a single command 
@@ -154,25 +155,25 @@ def execute(cmd, timeout=None):
 # params: 
 #       dir: path to the config file
 # return: [Host]
-def host_parser(dir):
+# def host_parser(dir):
 
-    try:
-        config = open(dir, 'r')
-    except IOError, err:
-        elog("afewmore ERROR: cannot open file: {0}".format(dir))
+#     try:
+#         config = open(dir, 'r')
+#     except IOError, err:
+#         elog("afewmore ERROR: cannot open file: {0}".format(dir))
 
-    lines = config.readlines()
-    hosts = []
-    for i in range(len(lines)):
-        if lines[i].strip(" ").split(" ")[0] == "Host":
-            j = i + 1
-            while (j < len(lines) and lines[j].strip(" ").split(" ")[0] != "Host"):
-                j += 1
-            res = [lines[k] for k in range(i, j)]
-            hosts.append(Host([item.strip().split(" ") for item in res]))
-    config.close()
+#     lines = config.readlines()
+#     hosts = []
+#     for i in range(len(lines)):
+#         if lines[i].strip(" ").split(" ")[0] == "Host":
+#             j = i + 1
+#             while (j < len(lines) and lines[j].strip(" ").split(" ")[0] != "Host"):
+#                 j += 1
+#             res = [lines[k] for k in range(i, j)]
+#             hosts.append(Host([item.strip().split(" ") for item in res]))
+#     config.close()
 
-    return hosts
+#     return hosts
 
 # function analyse_original_instance:
 # description: check if source instance is accessible; check if source directory is valid; check if login user name is valid
@@ -188,15 +189,15 @@ def analyse_original_instance(instance_id, copy_dir):
     while not origin.isReady():
         origin.isReady()
 
-    log("finding hosts from: {0}".format(SSH_CONFIG_DIR))
-    for host in host_parser(SSH_CONFIG_DIR):
-        if host.pubIp == origin.pubIp or host.pubIp == origin.pubDns:
-            log("host found: {0}".format(host))
-            origin.setLoginUser(host.user)
-            origin.setIdFile(host.idFile)
+    # log("parsing host from: {0}".format(SSH_CONFIG_DIR))
+    # for host in host_parser(SSH_CONFIG_DIR):
+        # if host.pubIp == origin.pubIp or host.pubIp == origin.pubDns:
+            # log("host found: {0}".format(host))
+        # origin.setLoginUser(host.user)
+        # origin.setIdFile(host.idFile)
 
     log('checking login username...')
-    out, err = execute("ssh -i {0} {1}@{2} 'echo cs615'".format(origin.idFile, origin.uname, origin.pubIp, copy_dir))
+    out, err = execute("ssh {0}@{1} 'echo cs615'".format(origin.uname, origin.pubDns))
 
     if err:
         log(err)
@@ -217,13 +218,13 @@ def analyse_original_instance(instance_id, copy_dir):
         SUPER_USER_COMMAND = 'sudo'
         # use chown to change the ownership of the entire copy_dir to loginUser
         log('changing dir ownership...')
-        execute("ssh -i {0} {1}@{2} '{3} chown -R {1} {4}'".format(origin.idFile, origin.uname, origin.pubIp, SUPER_USER_COMMAND, copy_dir))
+        execute("ssh {0}@{1} '{2} chown -R {0} {3}'".format(origin.uname, origin.pubDns, SUPER_USER_COMMAND, copy_dir))
         # user chmod to change the mod of the entire copy_dir to -(d)rwx------
         log('changing dir mode...')
-        execute("ssh -i {0} {1}@{2} 'chmod -R 700 {4}'".format(origin.idFile, origin.uname, origin.pubIp, SUPER_USER_COMMAND, copy_dir))
+        execute("ssh {0}@{1} '{2} chmod -R 700 {3}'".format(origin.uname, origin.pubDns, SUPER_USER_COMMAND, copy_dir))
         # check copy_dir
         log("checking soruce directory...")
-        out, err = execute("ssh -i {0} {1}@{2} 'ls -l {3}'".format(origin.idFile, origin.uname, origin.pubIp, copy_dir))
+        out, err = execute("ssh {0}@{1} 'ls -l {2}'".format(origin.uname, origin.pubDns, copy_dir))
         if err:
             elog("afewmore ERROR: cannot access directory or no such file")
             print err
@@ -233,7 +234,7 @@ def analyse_original_instance(instance_id, copy_dir):
 def analyse_created_instance(created, target_dir):
 
     log('checking login username...')
-    out, err = execute("ssh -i {0} {1}@{2} 'echo cs615'".format(created.idFile, created.uname, created.pubIp, target_dir))
+    out, err = execute("ssh {0}@{1} 'echo cs615'".format(created.uname, created.pubDns))
 
     if err:
         log(err)
@@ -254,16 +255,17 @@ def analyse_created_instance(created, target_dir):
         SUPER_USER_COMMAND = 'sudo'
         # in case newly created instance doesn't have the target directory
         log('creating target dir...')
-        execute("ssh -i {0} {1}@{2} '{3} mkdir -p {4}'".format(created.idFile, created.uname, created.pubIp, SUPER_USER_COMMAND, target_dir))
+        execute("ssh {0}@{1} '{2} mkdir -p {3}'".format(created.uname, created.pubDns, SUPER_USER_COMMAND, target_dir))
         # use chown to change the ownership of the entire target_dir to loginUser
         log('changing target dir ownership...')
-        execute("ssh -i {0} {1}@{2} '{3} chown -R {1} {4}'".format(created.idFile, created.uname, created.pubIp, SUPER_USER_COMMAND, target_dir))
+        execute("ssh {0}@{1} '{2} chown -R {0} {3}'".format(created.uname, created.pubDns, SUPER_USER_COMMAND, target_dir))
         # user chmod to change the mod of the entire target_dir to -(d)rwx------
         log('changing target dir mode...')
-        execute("ssh -i {0} {1}@{2} 'chmod -R 700 {4}'".format(created.idFile, created.uname, created.pubIp, SUPER_USER_COMMAND, target_dir))
+        execute("ssh {0}@{1} '{2} chmod -R 700 {3}'".format(created.uname, created.pubDns, SUPER_USER_COMMAND, target_dir))
         # check target_dir
         log("checking target directory...")
-        out, err = execute("ssh -i {0} {1}@{2} 'ls -l {3}'".format(created.idFile, created.uname, created.pubIp, target_dir))
+        out, err = execute("ssh {0}@{1} 'ls -l {2}'".format(created.uname, created.pubDns, target_dir))
+
         if err:
             elog("afewmore ERROR: cannot access directory or no such file")            
 
@@ -317,8 +319,8 @@ def scp(origin, targets, dir="/data"):
         if target.isReady():
             target = analyse_created_instance(target, dir)
             log("copying to target: {0}".format(target.insId))
-            out, err = execute("scp -3C -r -i {0} {1}@{2}:{3} {4}@{5}:{6}"
-                .format(origin.idFile, origin.uname, origin.pubIp, dir + "*", target.uname, target.pubIp, dir))
+            out, err = execute("scp -3C -r {0}@{1}:{2} {3}@{4}:{5}"
+                .format(origin.uname, origin.pubDns, dir + "*", target.uname, target.pubDns, dir))
             if err:
                 elog(err)
             if out:
