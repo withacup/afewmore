@@ -324,7 +324,7 @@ if __name__ == "__main__":
 
     while i < len(options):
         op = options[i]
-        if op not in FLAGS or i is len(options) - 1:
+        if op not in FLAGS or (i is len(options) - 1 and op != "-h"):
             if (len(op) is not 19):
                 elog("afewmore ERROR: Invalid argument {0}".format(op))
             if i is not len(options) - 1:
