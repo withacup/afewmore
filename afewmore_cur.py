@@ -111,10 +111,10 @@ def execute(cmd, timeout=None):
             os.killpg(pro.pid, signal.SIGTERM)
             return (output, error)
 
-        if output:
+        if output or error.strip() == "error: unexpected filename: ..":
             # log("successfully executed command: \n\t{0}".format(cmd))
             return (output, None)
-        if error:
+        if error :
             log("error occurred when excuting command: \n\t{0}".format(cmd)) 
             return (None, error)
         return ("", None)
@@ -163,12 +163,17 @@ def analyse_original_instance(instance_id, copy_dir):
 
         # super user command: assume it is sudo
         SUPER_USER_COMMAND = 'sudo'
-        # use chown to change the ownership of the entire copy_dir to loginUser
-        log('changing dir ownership...')
-        execute("ssh {0}@{1} '{2} chown -R {0} {3}'".format(origin.uname, origin.pubDns, SUPER_USER_COMMAND, copy_dir))
-        # user chmod to change the mod of the entire copy_dir to -(d)rwx------
-        log('changing dir mode...')
-        execute("ssh {0}@{1} '{2} chmod -R 700 {3}'".format(origin.uname, origin.pubDns, SUPER_USER_COMMAND, copy_dir))
+        # check if the instance have sudo command
+        out, err = execute("ssh {0}@{1} 'which sudo'".format(origin.uname, origin.pubDns))
+        if not out:
+            SUPER_USER_COMMAND = ''   
+        if origin.uname != 'root':
+            # use chown to change the ownership of the entire copy_dir to loginUser
+            log('changing dir ownership...')
+            execute("ssh {0}@{1} '{2} chown -R {0} {3}'".format(origin.uname, origin.pubDns, SUPER_USER_COMMAND, copy_dir))
+            # user chmod to change the mod of the entire copy_dir to -(d)rwx------
+            log('changing dir mode...')
+            execute("ssh {0}@{1} '{2} chmod -R 700 {3}'".format(origin.uname, origin.pubDns, SUPER_USER_COMMAND, copy_dir))
         # check copy_dir
         log("checking soruce directory...")
         out, err = execute("ssh {0}@{1} 'ls -l {2}'".format(origin.uname, origin.pubDns, copy_dir))
@@ -200,15 +205,23 @@ def analyse_created_instance(created, target_dir):
 
         # super user command: assume it is sudo
         SUPER_USER_COMMAND = 'sudo'
+        # check if the instance have sudo command
+        out, err = execute("ssh {0}@{1} 'which sudo'".format(created.uname, created.pubDns))
+        if not out:
+            SUPER_USER_COMMAND = '' 
         # in case newly created instance doesn't have the target directory
         log('creating target dir...')
         execute("ssh {0}@{1} '{2} mkdir -p {3}'".format(created.uname, created.pubDns, SUPER_USER_COMMAND, target_dir))
-        # use chown to change the ownership of the entire target_dir to loginUser
-        log('changing target dir ownership...')
-        execute("ssh {0}@{1} '{2} chown -R {0} {3}'".format(created.uname, created.pubDns, SUPER_USER_COMMAND, target_dir))
-        # user chmod to change the mod of the entire target_dir to -(d)rwx------
-        log('changing target dir mode...')
-        execute("ssh {0}@{1} '{2} chmod -R 700 {3}'".format(created.uname, created.pubDns, SUPER_USER_COMMAND, target_dir))
+
+        # if user cannot log in as root user
+        if created.uname != 'root':
+            # use chown to change the ownership of the entire target_dir to loginUser
+            log('changing target dir ownership...')
+            execute("ssh {0}@{1} '{2} chown -R {0} {3}'".format(created.uname, created.pubDns, SUPER_USER_COMMAND, target_dir))
+            # user chmod to change the mod of the entire target_dir to -(d)rwx------
+            log('changing target dir mode...')
+            execute("ssh {0}@{1} '{2} chmod -R 700 {3}'".format(created.uname, created.pubDns, SUPER_USER_COMMAND, target_dir))
+
         # check target_dir
         log("checking target directory...")
         out, err = execute("ssh {0}@{1} 'ls -l {2}'".format(created.uname, created.pubDns, target_dir))
@@ -267,7 +280,7 @@ def scp(origin, targets, dir="/data"):
             target = analyse_created_instance(target, dir)
             log("copying to target: {0}".format(target.insId))
             out, err = execute("scp -3C -r {0}@{1}:{2} {3}@{4}:{5}"
-                .format(origin.uname, origin.pubDns, dir + "*", target.uname, target.pubDns, dir))
+                .format(origin.uname, origin.pubDns, dir + ".*", target.uname, target.pubDns, dir))
             if err:
                 elog(err)
             if out:

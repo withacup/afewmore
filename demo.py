@@ -8,10 +8,43 @@ import sys
 
 import re
 
-p = re.compile('.*amazonaws\.com')
-m = p.match('ec2-174-129-149-195.compute-1.amazonas.com')
-print m
+# p = re.compile('.*amazonaws\.com')
+# m = p.match('ec2-174-129-149-195.compute-1.amazonas.com')
+# print m
 
+
+def log(line):
+    print line
+
+def execute(cmd, timeout=None):
+
+    try:
+        pro = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                               shell=True, preexec_fn=os.setsid) 
+        output, error = pro.communicate()
+
+        if timeout is not None:
+            time.sleep(timeout)
+            log("kill command: \n\t{0}".format(cmd))
+            os.killpg(pro.pid, signal.SIGTERM)
+            return (output, error)
+
+        if output or error.strip() == "error: unexpected filename: ..":
+            # log("successfully executed command: \n\t{0}".format(cmd))
+            return (output, None)
+        if error :
+            log("error occurred when excuting command: \n\t{0}".format(cmd)) 
+            return (None, error)
+        return ("", None)
+
+    except OSError, oserror:
+        return (None, oserror)
+
+out, err = execute("scp -r u1:/data/.* .")
+if out:
+    print out
+if err:
+    print err.strip()
 
 # print 'hello'
 # The os.setsid() is passed in the argument preexec_fn so
@@ -25,8 +58,8 @@ print m
 # end = time.time()
 # print end - start
 
-# def log(line):
-#     print line
+def log(line):
+    print line
 # def execute(cmd, timeout=None):
 
 #     try:
